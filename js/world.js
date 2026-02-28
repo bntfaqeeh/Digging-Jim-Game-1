@@ -1,11 +1,8 @@
-
-
-
 // map is the 2d matrix
 // tileWidth is the width of one tile
 // tileHeight is the height of the one tile
 // playerxpos is the tile number in x axis
-// playerypox is the tile number in y axis 
+// playerypox is the tile number in y axis
 var World = function (map, game) {
   this.game = game;
   this.worldMap = new WorldMap(map);
@@ -20,35 +17,39 @@ var World = function (map, game) {
 
   this.isWorldStop = false;
 
-
-}
+  // Timer properties
+  this.timeLimit = 180; // 3 minutes in seconds
+  this.timeRemaining = this.timeLimit;
+  this.timerInterval = null;
+};
 
 World.prototype.stop = function () {
   this.isWorldStop = true;
   this.entityManager.stop();
+  this.stopTimer();
   this.onStop();
-}
-
+};
 
 World.prototype.pause = function () {
   this.isWorldStop = true;
   this.entityManager.stop();
+  this.stopTimer();
   this.onPause();
-}
-
-
+};
 
 // this for playing world after pausing it with p key
 World.prototype.play = function () {
   this.isWorldStop = false;
   this.entityManager.play();
+  this.startTimer();
   this.onPlay();
-}
+};
 
 World.prototype.end = function () {
   this.controls.unRegisterControls();
   this.worldMap.eraseWorldMap(this);
-}
+  this.stopTimer();
+};
 
 World.prototype.start = function () {
   var self = this;
@@ -56,61 +57,54 @@ World.prototype.start = function () {
   this.player = this.worldMap.player;
   this.isWorldStop = false;
   this.entityManager.play();
-
+  this.startTimer();
 
   this.controls.onKeyUp = function () {
     if (!self.isWorldStop) {
       self.entityManager.requestPlayerMove(Direction.UP);
       //self.moveScrollBar();
     }
-  }
+  };
   this.controls.onKeyDown = function () {
     if (!self.isWorldStop) {
       self.entityManager.requestPlayerMove(Direction.DOWN);
       //self.moveScrollBar();
     }
-  }
+  };
 
   this.controls.onKeyLeft = function () {
     if (!self.isWorldStop) {
-
       self.entityManager.requestPlayerMove(Direction.LEFT);
       //self.moveScrollBar();
     }
-  }
+  };
   this.controls.onKeyRight = function () {
     if (!self.isWorldStop) {
       self.entityManager.requestPlayerMove(Direction.RIGHT);
       //self.moveScrollBar();
     }
-  }
+  };
 
   this.controls.onKeyPause = function () {
-    if (self.isWorldStop)
-      self.play();
-    else
-      self.pause();
-  }
+    if (self.isWorldStop) self.play();
+    else self.pause();
+  };
 
   this.controls.onKeyESC = function () {
     self.onFailInternal();
-  }
-
-}
-
+  };
+};
 
 World.prototype.moveScrollBar = function () {
   if (!this.isWorldStop) {
     var tx, ty;
     var scrX = Math.floor(window.innerWidth / Entity.width);
-    var scrY = Math.floor(window.innerHeight / Entity.height);;
+    var scrY = Math.floor(window.innerHeight / Entity.height);
     tx = (this.player.xpos - Math.floor(scrX / 2)) * Entity.width;
     ty = (this.player.ypos - Math.floor(scrY / 2)) * Entity.height;
     window.scrollTo(tx, ty);
   }
-}
-
-
+};
 
 // World.prototype.checkTile = function(xpos,ypos,tileType)
 // {
@@ -123,38 +117,79 @@ World.prototype.moveScrollBar = function () {
 // }
 
 World.prototype.onWinInternal = function () {
-
   this.player.removeEntity();
   this.player.winSound.play();
   this.stop();
 
   var self = this;
-  setTimeout(function(){self.onWin();},2500);
-
-}
-
+  setTimeout(function () {
+    self.onWin();
+  }, 2500);
+};
 
 World.prototype.onFailInternal = function () {
-  this.worldMap.updateTileTo(this.player.xpos - 1, this.player.ypos - 1, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos - 1, this.player.ypos, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos - 1, this.player.ypos + 1, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos + 1, this.player.ypos - 1, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos + 1, this.player.ypos, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos + 1, this.player.ypos + 1, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos, this.player.ypos - 1, AssetsType.background);
-  this.worldMap.updateTileTo(this.player.xpos, this.player.ypos + 1, AssetsType.background);
+  this.worldMap.updateTileTo(
+    this.player.xpos - 1,
+    this.player.ypos - 1,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos - 1,
+    this.player.ypos,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos - 1,
+    this.player.ypos + 1,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos + 1,
+    this.player.ypos - 1,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos + 1,
+    this.player.ypos,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos + 1,
+    this.player.ypos + 1,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos,
+    this.player.ypos - 1,
+    AssetsType.background,
+  );
+  this.worldMap.updateTileTo(
+    this.player.xpos,
+    this.player.ypos + 1,
+    AssetsType.background,
+  );
 
-
-  var e1 = this.entityManager.getEntity(this.player.xpos - 1, this.player.ypos - 1)
-  var e2 = this.entityManager.getEntity(this.player.xpos - 1, this.player.ypos)
-  var e3 = this.entityManager.getEntity(this.player.xpos - 1, this.player.ypos + 1)
-  var e4 = this.entityManager.getEntity(this.player.xpos + 1, this.player.ypos - 1)
-  var e5 = this.entityManager.getEntity(this.player.xpos + 1, this.player.ypos)
-  var e6 = this.entityManager.getEntity(this.player.xpos + 1, this.player.ypos + 1)
-  var e7 = this.entityManager.getEntity(this.player.xpos, this.player.ypos - 1)
-  var e8 = this.entityManager.getEntity(this.player.xpos, this.player.ypos + 1)
-  var e9 = this.entityManager.getEntity(this.player.xpos, this.player.ypos)
-
+  var e1 = this.entityManager.getEntity(
+    this.player.xpos - 1,
+    this.player.ypos - 1,
+  );
+  var e2 = this.entityManager.getEntity(this.player.xpos - 1, this.player.ypos);
+  var e3 = this.entityManager.getEntity(
+    this.player.xpos - 1,
+    this.player.ypos + 1,
+  );
+  var e4 = this.entityManager.getEntity(
+    this.player.xpos + 1,
+    this.player.ypos - 1,
+  );
+  var e5 = this.entityManager.getEntity(this.player.xpos + 1, this.player.ypos);
+  var e6 = this.entityManager.getEntity(
+    this.player.xpos + 1,
+    this.player.ypos + 1,
+  );
+  var e7 = this.entityManager.getEntity(this.player.xpos, this.player.ypos - 1);
+  var e8 = this.entityManager.getEntity(this.player.xpos, this.player.ypos + 1);
+  var e9 = this.entityManager.getEntity(this.player.xpos, this.player.ypos);
 
   if (e1 != null) e1.removeEntity();
   if (e2 != null) e2.removeEntity();
@@ -166,9 +201,14 @@ World.prototype.onFailInternal = function () {
   if (e8 != null) e8.removeEntity();
   if (e9 != null) e9.removeEntity();
 
-  var im = dom.createImg(Assets.getSrc(AssetsType.lose), "lose",
-  Entity.toPixelX(this.player.xpos - 1),
-  Entity.toPixelX(this.player.ypos - 1), Entity.width * 3, Entity.height * 3);
+  var im = dom.createImg(
+    Assets.getSrc(AssetsType.lose),
+    "lose",
+    Entity.toPixelX(this.player.xpos - 1),
+    Entity.toPixelX(this.player.ypos - 1),
+    Entity.width * 3,
+    Entity.height * 3,
+  );
   im.style.zIndex = 3;
 
   dom.addImage(im);
@@ -178,39 +218,80 @@ World.prototype.onFailInternal = function () {
   this.stop();
   this.player.loseSound.play();
   var self = this;
-  setTimeout(function(){self.onFail();},2000);
-  
-}
+  setTimeout(function () {
+    self.onFail();
+  }, 2000);
+};
 
 World.prototype.onEatDiamondInternal = function (value) {
   this.onEatDiamond(value);
-
-}
-
+};
 
 World.prototype.onStop = function () {
   //this.game.showPausedDiv();
-}
+};
 
 World.prototype.onPlay = function () {
   this.game.hidePausedDiv();
-}
+};
 
 World.prototype.onPause = function () {
   this.game.showPausedDiv();
-}
-
+};
 
 World.prototype.onWin = function () {
   this.game.gameWon(this.score);
-}
-
+};
 
 World.prototype.onFail = function () {
-  this.game.gameLose();
-}
+  this.game.gameLose(this.score);
+};
 
 World.prototype.onEatDiamond = function (value) {
   this.score += value;
   this.game.setScoreOnBar(this.score + this.game.score);
-}
+};
+
+World.prototype.startTimer = function () {
+  var self = this;
+  this.timeRemaining = this.timeLimit;
+  this.updateTimerDisplay();
+
+  this.timerInterval = setInterval(function () {
+    if (!self.isWorldStop) {
+      self.timeRemaining--;
+      self.updateTimerDisplay();
+
+      if (self.timeRemaining <= 0) {
+        self.stopTimer();
+        self.onFailInternal();
+      }
+    }
+  }, 1000);
+};
+
+World.prototype.stopTimer = function () {
+  if (this.timerInterval) {
+    clearInterval(this.timerInterval);
+    this.timerInterval = null;
+  }
+};
+
+World.prototype.updateTimerDisplay = function () {
+  var timerElement = document.getElementById("timer");
+  if (timerElement) {
+    timerElement.innerHTML = this.timeRemaining;
+
+    // Change color when time is running out
+    if (this.timeRemaining <= 30) {
+      timerElement.style.backgroundColor = "red";
+      timerElement.style.color = "white";
+    } else if (this.timeRemaining <= 60) {
+      timerElement.style.backgroundColor = "orange";
+      timerElement.style.color = "white";
+    } else {
+      timerElement.style.backgroundColor = "darkgray";
+      timerElement.style.color = "white";
+    }
+  }
+};

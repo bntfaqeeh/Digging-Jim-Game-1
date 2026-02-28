@@ -6,5 +6,4 @@ FROM GROUP EIGHT(8) MEMBERS.
 
 # OUR DEV TEAM
 
-
 <img src="/Demo.gif?raw=true">

@@ -1,20 +1,21 @@
-<!-- <!DOCTYPE html> -->
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Digging Jim Game</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
-        integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
-        crossorigin="anonymous" />
-    <link rel="stylesheet" href="css/beforeStart.css">
-    <link rel="stylesheet" href="css/Draw_div.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
+      integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w=="
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/beforeStart.css" />
+    <link rel="stylesheet" href="css/Draw_div.css" />
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
-
     <style>
-        /* .container{
+      /* .container{
             position: relative;
             width: 100vw;
             height: 100vh;
@@ -24,214 +25,369 @@
             background-color: gray;
         } */
 
-        #gameLost {
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
+      #gameLost {
+        display: none;
+        position: relative;
+        z-index: 10;
+      }
 
-        #gameOver {
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
+      #gameOver {
+        display: none;
+        position: relative;
+        z-index: 10;
+      }
 
-        #nextMap {
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
+      #nextMap {
+        display: none;
+        position: relative;
+        z-index: 10;
+      }
 
-        #footer {
-            display: none;
-            z-index: 10;
-        }
+      #footer {
+        display: none;
+        z-index: 10;
+      }
 
-        #winAll {
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
+      #winAll {
+        display: none;
+        position: relative;
+        z-index: 10;
+      }
 
-        #startHome {
-            display: none;
-        }
+      #startHome {
+        display: block;
+      }
 
-        #paused {
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
+      #paused {
+        display: none;
+        position: relative;
+        z-index: 10;
+      }
 
-        /* Disable scrollbar Chrom */
-        ::-webkit-scrollbar {
-            display: none;
-        }
+      /* Disable scrollbar Chrom */
+      ::-webkit-scrollbar {
+        display: none;
+      }
 
-        @-moz-document url-prefix() {
-            /* Disable scrollbar Firefox */
-            html {
-                scrollbar-width: none;
-            }
+      @-moz-document url-prefix() {
+        /* Disable scrollbar Firefox */
+        html {
+          scrollbar-width: none;
         }
+      }
     </style>
-</head>
+  </head>
 
-<body id="myBody">
+  <body id="myBody">
+    <div id="startHome" style="height: 100vh; width: 100vh">
+      <!-- Start -->
 
+      <div id="header">
+        <img src="resources/images/beforeStart/logo.jpg" id="logo" />
+        <button id="muteButton" class="mute-btn">🔊</button>
+      </div>
+      <div id="div" style="display: inline-block">
+        <h3>
+          <button type="button" class="main" id="newgame">LET'S BEGIN</button>
+        </h3>
+        <h3>
+          <button type="button" class="main" id="dashbord">
+            HIGHEST SCORES
+          </button>
+        </h3>
+        <h3>
+          <button type="button" class="main" id="aboutus">ABOUT US</button>
+        </h3>
+        <h3><button type="button" class="main" id="exit">EXIT</button></h3>
+      </div>
+      <img src="resources/images/beforeStart/download.jfif" id="jim" />
 
-    <div id="startHome" style="height: 100vh; width: 100vh;">
-
-        <!-- Start -->
-
-        <div id='header'>
-            <img src="resources/images/beforeStart/logo.jpg" id="logo">
+      <!-- LET'S BEGIN-->
+      <div id="popupUserName">
+        <div id="popup-content">
+          <span class="close" id="x"> X</span>
+          <p id="popuptext">Enter Your Name</p>
+          <input type="text" id="pName" required />
+          <br />
+          <span id="temp"></span>
+          <br />
+          <button type="button" id="getPName"><label>LET'S GO</label></button>
         </div>
-        <div id='div' style="display: inline-block;">
-            <h3><button type='button' class="main" id='newgame'>LET'S BEGIN</button></h3>
-            <h3><button type='button' class="main" id='dashbord'>HIGHEST SCORES</button></h3>
-            <h3><button type='button' class="main" id='aboutus'>ABOUT US</button></h3>
-            <h3><button type='button' class="main" id='exit'>EXIT</button></h3>
-        </div>
-        <img src="resources/images/beforeStart/download.jfif" id="jim">
+      </div>
 
-        <!-- LET'S BEGIN-->
-        <div id="popupUserName">
-            <div id="popup-content">
-                <span class="close" id="x"> X</span>
-                <p id="popuptext">Enter Your Name</p>
-                <input type="text" id="pName" required>
-                <br>
-                <span id="temp"></span>
-                <br>
-                <button type="button" id="getPName"><label>LET'S GO</label></button>
+      <!--High Score-->
+      <div id="highestScorePOPUP">
+        <div id="highestScoreContent">
+          <span id="highspan" class="close">X</span>
+          <div id="list" class="w3-container">
+            <ol id="olHighScore" class="w3-ul w3-border"></ol>
+          </div>
+        </div>
+      </div>
+
+      <div id="popupAboutus">
+        <div id="aboutus-content">
+          <div class="about-header">
+            <span id="aboutusspan" class="close">X</span>
+            <h1>Team</h1>
+          </div>
+
+          <div class="about-body">
+            <div id="team-container">
+              <div class="team-row">
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-19 at 8.43.51 AM.jpeg"
+                      alt="Team Member 1"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Fakii Ajaansuma Tagra Shaida</h3>
+                      <p class="role">Game Logic & Core Mechanics</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-19 at 8.44.23 AM.jpeg"
+                      alt="Team Member 2"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Olivia Salomey Cudjoe</h3>
+                      <p class="role">Player Controls & Animation</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-19 at 8.45.33 AM.jpeg"
+                      alt="Team Member 3"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Hidaya Fatawu</h3>
+                      <p class="role">Map Design & Level Creation</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-19 at 1.45.46 PM.jpeg"
+                      alt="Team Member 4"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Abdul Fatawu Abdul Rauf</h3>
+                      <p class="role">Entity Manager & Collision Detection</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-19 at 1.46.04 PM.jpeg"
+                      alt="Team Member 5"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Fadjara Alidu Yussif</h3>
+                      <p class="role">UI/UX Design & Home Screen</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="team-row">
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-22 at 1.30.00 PM.jpeg"
+                      alt="Team Member 6"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Sahla Mandeeya</h3>
+                      <p class="role">Sound Effects & Audio Integration</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-23 at 7.45.38 AM.jpeg"
+                      alt="Team Member 7"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Duah Abel</h3>
+                      <p class="role">Graphics & Asset Management</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-23 at 12.15.21 PM.jpeg"
+                      alt="Team Member 8"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Saviour Yaw Sarpong</h3>
+                      <p class="role">Score System & Cookies</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-23 at 12.21.38 PM.jpeg"
+                      alt="Team Member 9"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Abdullah Ian Coffie</h3>
+                      <p class="role">World Rendering & Tiles</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="team-member">
+                  <div class="member-card">
+                    <img
+                      src="resources/images/team/WhatsApp Image 2026-02-23 at 12.31.41 PM.jpeg"
+                      alt="Team Member 10"
+                      class="team-img"
+                    />
+                    <div class="member-info">
+                      <h3>Kwame Agyei Boateng</h3>
+                      <p class="role">Testing & Bug Fixes</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-        </div>
-
-
-        <!--High Score-->
-        <div id="highestScorePOPUP">
-            <div id="highestScoreContent">
-                <span id="highspan" class="close">X</span>
-                <div id="list" class="w3-container">
-                    <ol id="olHighScore" class="w3-ul w3-border">
-
-                    </ol>
+          </div>
+                      width: 100px;
+                      height: 150px;
+                      border-radius: 10px;
+                      object-fit: cover;
+                    "
+                    class="team"
+                  />
+                  <h3>Zakaria Sadique Wumpini</h3>
+                  <p style="font-size: 12px; color: #7f8c8d">
+                    Testing & Bug Fixes
+                  </p>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
 
-        <div id="popupAboutus">
-            <div id="aboutus-content">
-                <span id="aboutusspan" class="close">X</span>
-                <h1> Team </h1>
-
-                <div style="color: darkcyan; display: inline-block; margin: 2%;">
-                    <img src="resources/images/team/1.png" alt="avatar" style="width:100px;height: 150px; "
-                        class="team">
-
-                    <h3>Mohammed<br>Shahida</h3>
-
-                </div>
-                <div style="color: blue; display: inline-block; margin: 2%;">
-                    <img src="resources/images/team/1.png" alt="avatar" style="width:100px;height: 150px; "
-                        class="team">
-                    <h3>Mohammed<br>Shahida</h3>
-                </div>
-                <div style="color: chartreuse;  display: inline-block; margin: 2%;">
-                    <img src="resources/images/team/1.png" alt="avatar" style="width:100px;height: 150px; "
-                        class="team">
-                    <h3>Mohammed<br>Shahida</h3>
-                </div>
-
-                <div style="color: darkblue;  display: inline-block; margin: 2%;">
-                    <img src="resources/images/team/1.png" alt="avatar" style="width:100px;height: 150px; "
-                        class="team">
-
-                    <h3>Mohammed<br>Shahida</h>
-                </div>
-
-
-
-            </div>
+      <!--EXIT-->
+      <div id="exitPopUp">
+        <div id="exitContent">
+          <h1 id="Q">you want to give up?!</h1>
+          <button id="no" class="exitOP">NO</button>
+          <button id="yes" class="exitOP">YES</button>
         </div>
-
-        <!--EXIT-->
-        <div id="exitPopUp">
-            <div id="exitContent">
-                <h1 id="Q">you want to give up?!</h1>
-                <button id="no" class="exitOP">NO</button>
-                <button id="yes" class="exitOP">YES</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-
-
-
     <div id="gameLost">
-        <div id="button">
-            <span id="Restart2">Restart</span>
-            <span id="CloseLost">Close</span>
-        </div>
+      <p id="pGame" style="text-align: center">
+        <span style="font-size: 50px">You Lost!</span>
+        <br />
+        <span style="font-size: 30px">Score: </span
+        ><span id="scoreLost" style="font-size: 30px">0</span>
+        <br />
+        <span style="font-size: 25px">Lives Left: </span
+        ><span id="livesLeft" style="font-size: 25px">0</span>
+      </p>
+      <div id="button">
+        <span id="Restart2">Restart</span>
+        <span id="CloseLost">Close</span>
+      </div>
     </div>
 
     <div id="gameOver">
-        <p id="pGame" style="text-align: center;">
-            <span>Game Over</span>
-            <br>
-            <br>
-            <span id="Gname"> </span>
-            <br>
-            <span>Score: </span><span id="score"></span>
-        </p>
-        <!-- <p class="pGame2">
+      <p id="pGame" style="text-align: center">
+        <span>Game Over</span>
+        <br />
+        <br />
+        <span id="Gname"> </span>
+        <br />
+        <span>Score: </span><span id="score"></span>
+      </p>
+      <!-- <p class="pGame2">
             
         </p> -->
 
-        <div id="button">
-            <span id="restart">Restart</span>
-            <span id="exitGame">Exit</span>
-        </div>
+      <div id="button">
+        <span id="restart">Restart</span>
+        <span id="exitGame">Exit</span>
+      </div>
     </div>
 
     <div id="winAll">
-        <div id="winA" style="text-align: center;">
-            <img style="
-            height: 150px;
-            width: 150px;" src="resources/images/King2.png" alt="">
-            <p id="pGame2" style="text-align: center;">
-                <span id="span5">Score</span>
-                <br>
-                <span id="span6"></span>
-            </p>
-            <div id="button2">
-                <span id="restart_01">Restart</span>
-                <span id="exitGame_01">Exit</span>
-            </div>
+      <div id="winA" style="text-align: center">
+        <img
+          style="height: 150px; width: 150px"
+          src="resources/images/King2.png"
+          alt=""
+        />
+        <p id="pGame2" style="text-align: center">
+          <span id="span5">Score</span>
+          <br />
+          <span id="span6"></span>
+        </p>
+        <div id="button2">
+          <span id="restart_01">Restart</span>
+          <span id="exitGame_01">Exit</span>
         </div>
+      </div>
     </div>
 
     <div id="paused">
-        <span id="pausedWord">Paused</span>
+      <span id="pausedWord">Paused</span>
     </div>
 
-
-
     <div id="footer">
-        <span class="badge" style="background-color: darkgray;">Score</span>
-        <span class="badge" id="score" style="background-color: darkgray;">0</span>
-        <span class="badge" style="background-color: darkgray;">Lives</span>
-        <span class="badge" id="lifes" style="background-color: darkgray;">3</span>
-        <span class="badge" style="background-color: darkgray;">Level</span>
-        <span class="badge" id="level" style="background-color: darkgray;  vertical-align:middle;">1</span>
+      <span class="badge" style="background-color: darkgray">Score</span>
+      <span class="badge" id="score" style="background-color: darkgray">0</span>
+      <span class="badge" style="background-color: darkgray">Lives</span>
+      <span class="badge" id="lifes" style="background-color: darkgray">3</span>
+      <span class="badge" style="background-color: darkgray">Level</span>
+      <span
+        class="badge"
+        id="level"
+        style="background-color: darkgray; vertical-align: middle"
+        >1</span
+      >
+      <span class="badge" style="background-color: darkgray">Time</span>
+      <span class="badge" id="timer" style="background-color: darkgray"
+        >180</span
+      >
     </div>
 
     <div id="nextMap">
-        <div id="nextM">
-            <span id="Continue">Continue</span>
-            <span id="CloseWin">Close</span>
-        </div>
+      <div id="nextM">
+        <span id="Continue">Continue</span>
+        <span id="CloseWin">Close</span>
+      </div>
     </div>
 
     <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
@@ -251,6 +407,5 @@
     <script src="js/world.js"></script>
     <script src="js/Game.js"></script>
     <script src="js/main.js"></script>
-</body>
-
+  </body>
 </html>

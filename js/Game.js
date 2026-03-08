@@ -117,23 +117,68 @@ function Game(maps) {
     this.world.start();
   };
 
+  // Return the best stored score for a player (localStorage only)
+  this.getStoredHighScore = function (playerName) {
+    var key = `sc-${playerName}`;
+    var best = NaN;
+
+    try {
+      var lsValue = parseInt(localStorage.getItem(key), 10);
+      if (!isNaN(lsValue)) {
+        best = lsValue;
+      }
+    } catch (e) {
+      console.error("localStorage unavailable:", e);
+    }
+
+    return best;
+  };
+
+  // Save a player high score, only updating if the new score is higher than stored.
+  this.saveHighScore = function (score) {
+    if (!this.playerName) {
+      console.error("Cannot save high score: playerName is empty");
+      return;
+    }
+    var key = `sc-${this.playerName}`;
+    var storedBest = this.getStoredHighScore(this.playerName);
+    var shouldUpdate = isNaN(storedBest) || score > storedBest;
+    var valueToWrite = shouldUpdate ? score : storedBest;
+
+    console.log(
+      "Saving high score:",
+      key,
+      "Score:",
+      valueToWrite,
+      "(stored best:",
+      storedBest,
+      "shouldUpdate:",
+      shouldUpdate,
+      ")"
+    );
+
+    try {
+      localStorage.setItem(key, valueToWrite);
+      console.log("✓ localStorage saved successfully:", key, "=", valueToWrite);
+    } catch (e) {
+      console.error("✗ Could not save score to localStorage:", e);
+    }
+    
+    // Verify the save
+    var verifyBest = this.getStoredHighScore(this.playerName);
+    console.log("✓ Verification - stored high score is now:", verifyBest);
+  };
+
   this.gameWon = function (score = 0) {
+    console.log("gameWon called - level score:", score, "current game.score:", this.score, "mapId:", this.mapId);
     this.world.stop();
     this.mapId++;
     this.score += score;
     this.setScoreOnBar(this.score);
+    console.log("After update - total score:", this.score, "next mapId:", this.mapId, "total maps:", this.maps.length);
     if (this.mapId == this.maps.length) {
-      console.log(
-        "Saving score cookie:",
-        `sc-${this.playerName}`,
-        "Score:",
-        this.score,
-      );
-      window.clib.setCookie(`sc-${this.playerName}`, this.score);
-      console.log(
-        "Cookie saved. Checking if it exists:",
-        window.clib.hasCookie(`sc-${this.playerName}`),
-      );
+      console.log("All maps completed! Calling saveHighScore with score:", this.score, "playerName:", this.playerName);
+      this.saveHighScore(this.score);
       this.wonAllDiv(this.score);
     } else {
       this.nextMapDiv();
@@ -141,24 +186,17 @@ function Game(maps) {
   };
 
   this.gameLose = function (levelScore) {
+    console.log("gameLose called - levelScore:", levelScore, "current game.score:", this.score, "lives:", this.lives);
     if (levelScore) {
       this.score += levelScore;
     }
     this.lives--;
     this.setLivesOnBar(this.lives);
     this.setScoreOnBar(this.score);
+    console.log("After update - total score:", this.score, "remaining lives:", this.lives);
     if (this.lives == 0) {
-      console.log(
-        "Saving score cookie:",
-        `sc-${this.playerName}`,
-        "Score:",
-        this.score,
-      );
-      window.clib.setCookie(`sc-${this.playerName}`, this.score);
-      console.log(
-        "Cookie saved. Checking if it exists:",
-        window.clib.hasCookie(`sc-${this.playerName}`),
-      );
+      console.log("Game Over! Calling saveHighScore with score:", this.score, "playerName:", this.playerName);
+      this.saveHighScore(this.score);
       this.gameOverDiv(this.playerName, this.score);
     } else {
       this.playAgainDiv();
@@ -181,6 +219,18 @@ function Game(maps) {
     window.scrollTo(0, 0);
     document.getElementById("Gname").innerHTML = nm;
     document.getElementById("score").innerHTML = score;
+    
+    // Show personal best
+    var personalBest = this.getStoredHighScore(nm);
+    var scoreElement = document.getElementById("score");
+    if (!isNaN(personalBest) && score >= personalBest) {
+      scoreElement.innerHTML = score + " 🏆 NEW HIGH SCORE!";
+      scoreElement.style.color = "#FFD700";
+    } else if (!isNaN(personalBest)) {
+      scoreElement.innerHTML = score + " (Best: " + personalBest + ")";
+      scoreElement.style.color = "";
+    }
+    
     $("#gameOver").show();
   };
 
@@ -188,6 +238,17 @@ function Game(maps) {
     window.scrollTo(0, 0);
     $("#winAll").show();
     document.getElementById("span6").innerHTML = score;
+    
+    // Show if it's a new high score
+    var personalBest = this.getStoredHighScore(this.playerName);
+    var scoreElement = document.getElementById("span6");
+    if (!isNaN(personalBest) && score >= personalBest) {
+      scoreElement.innerHTML = score + " 🏆 NEW HIGH SCORE!";
+      scoreElement.style.color = "#FFD700";
+    } else if (!isNaN(personalBest)) {
+      scoreElement.innerHTML = score + " (Best: " + personalBest + ")";
+      scoreElement.style.color = "";
+    }
   };
 
   this.showPausedDiv = function () {

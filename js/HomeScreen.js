@@ -74,22 +74,85 @@ const HomeScreen = {
       document.getElementById("pName").focus();
     };
 
+    document.getElementById("testScore").onclick = function () {
+      console.log("=== TESTING SCORE SAVE/LOAD (localStorage only) ===");
+      
+      // Test 1: Save a test score
+      var testName = "TestPlayer";
+      var testScore = 999;
+      var key = `sc-${testName}`;
+      
+      console.log("Test 1: Saving score", testScore, "for player", testName);
+      
+      try {
+        localStorage.setItem(key, testScore);
+        console.log("✓ localStorage saved");
+      } catch (e) {
+        console.error("✗ localStorage save failed:", e);
+      }
+      
+      // Test 2: Read it back
+      console.log("\nTest 2: Reading score back");
+      
+      try {
+        var lsValue = localStorage.getItem(key);
+        console.log("✓ localStorage value:", lsValue);
+      } catch (e) {
+        console.error("✗ localStorage read failed:", e);
+      }
+      
+      // Test 3: Check all localStorage
+      console.log("\nTest 3: All localStorage items with 'sc-' prefix");
+      try {
+        var found = false;
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (k.startsWith('sc-')) {
+            console.log("  ", k, "=", localStorage.getItem(k));
+            found = true;
+          }
+        }
+        if (!found) {
+          console.log("  No scores found in localStorage");
+        }
+      } catch (e) {
+        console.error("✗ Failed to read localStorage:", e);
+      }
+      
+      alert("Test complete! Check the console (F12) for results.\nThen click 'HIGHEST SCORES' to see if TestPlayer appears.");
+    };
+
     document.getElementById("dashbord").onclick = function () {
       obj.hideAll();
       document.getElementById("olHighScore").innerHTML = "";
-      var allCookies = clib.allCookieList();
-      console.log("All cookies:", allCookies);
-      var allScores = [];
-      for (ck in allCookies) {
-        console.log("Checking cookie:", ck, "Value:", allCookies[ck]);
-        if (/^(sc-)/i.test(ck) == true) {
-          console.log("Found score cookie:", ck);
-          allScores.push({
-            key: ck.substr(3),
-            value: parseInt(allCookies[ck]),
-          });
+      
+      console.log("=== Loading High Scores ===");
+
+      // Get all scores from localStorage only
+      var scoreMap = {};
+
+      try {
+        for (var i = 0; i < localStorage.length; i++) {
+          var key = localStorage.key(i);
+          if (/^(sc-)/i.test(key)) {
+            var player = key.substr(3);
+            var score = parseInt(localStorage.getItem(key), 10);
+            if (!isNaN(score)) {
+              scoreMap[player] = score;
+              console.log("Found score - Player:", player, "Score:", score);
+            }
+          }
         }
+      } catch (e) {
+        console.error("localStorage unavailable:", e);
       }
+
+      console.log("Final scoreMap:", scoreMap);
+
+      var allScores = Object.keys(scoreMap).map(function (player) {
+        return { key: player, value: scoreMap[player] };
+      });
+
       console.log("All scores found:", allScores);
       allScores.sort(function (a, b) {
         return b.value - a.value;
@@ -115,6 +178,38 @@ const HomeScreen = {
 
     document.getElementById("highspan").onclick = function () {
       document.getElementById("highestScorePOPUP").style.display = "none";
+    };
+
+    document.getElementById("clearAllScores").onclick = function () {
+      if (confirm("Are you sure you want to clear ALL high scores? This cannot be undone!")) {
+        // Clear all score items from localStorage
+        try {
+          var keysToDelete = [];
+          for (var i = 0; i < localStorage.length; i++) {
+            var key = localStorage.key(i);
+            if (/^(sc-)/i.test(key)) {
+              keysToDelete.push(key);
+            }
+          }
+          keysToDelete.forEach(function(key) {
+            localStorage.removeItem(key);
+            console.log("Deleted from localStorage:", key);
+          });
+        } catch (e) {
+          console.error("Could not clear localStorage:", e);
+        }
+        
+        // Refresh the display
+        document.getElementById("olHighScore").innerHTML = "";
+        var noScores = document.createElement("li");
+        noScores.innerHTML = "All scores cleared!";
+        noScores.style.color = "#e74c3c";
+        noScores.style.fontStyle = "italic";
+        noScores.style.listStyle = "none";
+        document.getElementById("olHighScore").appendChild(noScores);
+        
+        alert("All high scores have been cleared!");
+      }
     };
 
     document.getElementById("aboutus").onclick = function () {

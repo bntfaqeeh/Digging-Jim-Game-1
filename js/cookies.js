@@ -48,9 +48,9 @@
         // date = date.toUTCString();
         if (arguments[2] !== undefined) {
             date = date.toUTCString();
-            document.cookie = `${key}=${value};expires=${date}`;
+            document.cookie = `${key}=${value};expires=${date};path=/`;
         } else {
-            document.cookie = `${key}=${value}`;
+            document.cookie = `${key}=${value};path=/`;
         }
     }
 
